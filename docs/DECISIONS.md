@@ -8,7 +8,8 @@ One line per decision. Decisions that change the spec are also written into `doc
 - 2026-10-08 — Flutter app is the repo root (no `workout/` subfolder). Package name `workout_app`.
 - 2026-10-08 — App ID `io.github.reeloyyy.workoutapp` on Android and iOS. Do not change it: data is tied to it.
 - 2026-10-08 — Display name "Workout App" on both platforms.
-- 2026-10-08 — Installed Flutter 3.41.9 pins `meta 1.17.0`, so pub resolves `flutter_riverpod` 2.6.1 and `drift` 2.34.x (newest compatible). Riverpod 2.6 has `Notifier`/`AsyncNotifier`, which is all §4 needs. Revisit after a `flutter upgrade`.
+- 2026-10-08 — Flutter upgraded to 3.47.7: `flutter_riverpod` 3.4, `go_router` 18, `drift` 2.35. No code changes were needed. Riverpod 3 pauses providers for widgets that are not visible; keep that in mind for the player overlay (M3).
+- 2026-10-08 — `flutter_local_notifications` stays on stable 22.3.x (`pub upgrade --major-versions` picked 23.0.0-dev). Its Linux plugin needs `dbus` 0.7, which holds `wakelock_plus` at 1.7.x (1.8.1 needs `dbus` 0.8). Revisit when notifications 23 is stable.
 - 2026-10-08 — Android AGP raised to 8.12.1 (minimum for `wakelock_plus`; ≥ 8.11.1 required by `flutter_local_notifications`).
 - 2026-10-08 — iOS deployment target raised to 14.0 (required by `file_picker`).
 - 2026-10-08 — Exact alarms use `SCHEDULE_EXACT_ALARM` (user-grantable), not `USE_EXACT_ALARM`; inexact fallback when not granted.
