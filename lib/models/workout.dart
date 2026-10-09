@@ -64,3 +64,53 @@ class Workout {
   @override
   String toString() => 'Workout($name, ${exercises.length} exercises)';
 }
+
+/// A workout stored in the library.
+class SavedWorkout {
+  const SavedWorkout({required this.id, required this.workout});
+
+  final int id;
+  final Workout workout;
+
+  @override
+  bool operator ==(Object other) =>
+      other is SavedWorkout && other.id == id && other.workout == workout;
+
+  @override
+  int get hashCode => Object.hash(id, workout);
+
+  @override
+  String toString() => 'SavedWorkout($id, $workout)';
+}
+
+/// One row of the library list.
+class WorkoutSummary {
+  const WorkoutSummary({
+    required this.id,
+    required this.name,
+    required this.exerciseCount,
+    this.lastDone,
+  });
+
+  final int id;
+  final String name;
+  final int exerciseCount;
+
+  /// When a finished session with at least one logged set last ended.
+  final DateTime? lastDone;
+
+  @override
+  bool operator ==(Object other) =>
+      other is WorkoutSummary &&
+      other.id == id &&
+      other.name == name &&
+      other.exerciseCount == exerciseCount &&
+      other.lastDone == lastDone;
+
+  @override
+  int get hashCode => Object.hash(id, name, exerciseCount, lastDone);
+
+  @override
+  String toString() =>
+      'WorkoutSummary($id, $name, $exerciseCount exercises, $lastDone)';
+}

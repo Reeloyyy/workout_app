@@ -66,6 +66,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    # Same content as test/fixtures/valid_push_day.json (checked by a test).
+    - assets/sample_workout.json
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

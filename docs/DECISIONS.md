@@ -53,3 +53,20 @@ One line per decision. Decisions that change the spec are also written into `doc
 - The vibration setting: iOS has no per-notification vibration control; vibration follows the system's sound settings.
 - File import from the Files app.
 - Wakelock while the player is open.
+
+## M2 — Database and library
+
+- 2026-10-08 — All five §7.4 tables are in schema v1 (the library's "last done" already needs `sessions` and `set_logs`). The v1 schema is snapshotted in `drift_schemas/`; `make-migrations` generates migration tests from v2 on.
+- 2026-10-08 — `exercises.unit` is NOT NULL, matching `Exercise.unit` (AGENTS.md §7.4).
+- 2026-10-08 — DateTimes are stored as ISO-8601 text in UTC; repositories return local time (AGENTS.md §7.4).
+- 2026-10-08 — Foreign keys are switched on (`PRAGMA foreign_keys = ON`) every time the database opens, so cascades and set-null work.
+- 2026-10-08 — The settings row is created with defaults: kg, no reminder days, 18:00, sound on, vibration on.
+- 2026-10-08 — "Last done" = end time of the latest finished session with ≥ 1 logged set, so discarded sessions do not count (AGENTS.md §7.1).
+- 2026-10-08 — The library is sorted by name, case-insensitive (AGENTS.md §7.1).
+- 2026-10-08 — Several workouts in one file: one dialog per name clash, Cancel saves nothing, everything is saved in one transaction; names repeated inside the file are numbered without asking (AGENTS.md §7.1).
+- 2026-10-08 — Numbered names are shortened to stay within 60 characters so they still re-import (AGENTS.md §7.1).
+- 2026-10-08 — Replace keeps the workout's id and creation time, so past sessions stay linked.
+- 2026-10-08 — The detail screen shows Export and Delete as app-bar icons with tooltips. Start arrives with the player in M3.
+- 2026-10-08 — "Add sample workout" loads `assets/sample_workout.json`, a copy of `test/fixtures/valid_push_day.json` (a test checks they match).
+- 2026-10-08 — New copy: "No workouts yet", "Workouts are added as JSON. Tap Import, then paste the JSON or choose a .json file.", "N exercises · Last done <date>" / "Not done yet", "Workout saved." / "N workouts saved.", "Name already exists", "A workout named "X" is already saved.", "Delete workout?", ""X" will be removed. Its history is kept.", "Workout JSON copied to the clipboard.", and the "could not be saved / loaded / deleted / added" errors.
+- 2026-10-08 — `build_runner` 2.16 removed `--delete-conflicting-outputs`; the commands in AGENTS.md §3 and the README are updated.

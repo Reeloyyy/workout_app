@@ -63,7 +63,12 @@ flutter pub add flutter_riverpod go_router drift drift_flutter path_provider \
 flutter pub add --dev build_runner drift_dev
 
 # code generation (drift)
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
+
+# after changing a drift table: bump schemaVersion, then snapshot the schema
+# (drift_schemas/) and generate migration tests (test/drift/); write the
+# migration step in AppDatabase.migration until those tests pass
+dart run drift_dev make-migrations
 
 # checks
 dart format . && flutter analyze && flutter test
@@ -355,9 +360,9 @@ This format is the product. Do not change the meaning of a field without bumping
 
 | Route | Screen | Behaviour |
 |---|---|---|
-| `/` | Library | Saved workouts: name, exercise count, "last done" date. FAB → Import. Empty state explains import and has **"Add sample workout"** (imports the fixture above). Banner to resume an unfinished session if one exists. |
+| `/` | Library | Saved workouts: name, exercise count, "last done" date (end time of the latest finished session with at least one logged set), sorted by name (case-insensitive). FAB → Import. Empty state explains import and has **"Add sample workout"** (imports the fixture above). Banner to resume an unfinished session if one exists. |
 | `/import` | Import | Multiline text field (monospace). Buttons: **Paste**, **Choose file** (`.json`), **Validate**. Errors and warnings listed under the field. |
-| `/import/preview` | Import preview | Read-only list of each workout and its exercises as the player shows them. **Save** / **Back**. If a name already exists, dialog: *Replace*, *Keep both* (append " (2)", or the next free number: " (3)", …), *Cancel*. |
+| `/import/preview` | Import preview | Read-only list of each workout and its exercises as the player shows them. **Save** / **Back**. If a name already exists, dialog: *Replace*, *Keep both* (append " (2)", or the next free number: " (3)", …), *Cancel*. With several workouts in one file, the dialog is shown for each clash and *Cancel* saves nothing; names repeated inside the file are numbered without asking. Numbered names are shortened to stay within 60 characters. |
 | `/workout/:id` | Workout detail | Exercises with sets × reps (or duration), weight, rest. Buttons: **Start**, **Export** (copy JSON to clipboard + snackbar), **Delete** (confirm). |
 | `/session/:id` | Player | See §7.2. Back button asks "Leave workout? Progress is saved." |
 | `/session/:id/summary` | Summary | Duration, sets completed, total volume (Σ reps × weight, reps type only; one total per unit if kg and lb are mixed, no conversion). **Done** → `/`. |
@@ -463,11 +468,12 @@ any state ──finish──▶ finished
 | Table | Columns |
 |---|---|
 | `workouts` | `id` PK, `name`, `description?`, `tags_json`, `default_rest_seconds`, `created_at`, `updated_at` |
-| `exercises` | `id` PK, `workout_id` FK (cascade delete), `position`, `name`, `type`, `sets`, `reps?`, `reps_max?`, `duration_seconds?`, `weight?`, `unit?`, `rest_seconds?`, `notes?`, `group_key?` |
+| `exercises` | `id` PK, `workout_id` FK (cascade delete), `position`, `name`, `type`, `sets`, `reps?`, `reps_max?`, `duration_seconds?`, `weight?`, `unit` (never null, see §6.2), `rest_seconds?`, `notes?`, `group_key?` |
 | `sessions` | `id` PK, `workout_id?` (set null on delete), `workout_name`, `workout_snapshot_json`, `started_at`, `finished_at?`, `active_exercise_index?`, `rest_ends_at?` |
 | `set_logs` | `id` PK, `session_id` FK (cascade), `exercise_position`, `exercise_name`, `set_number`, `reps?`, `weight?`, `unit?`, `duration_seconds?`, `completed_at` |
 | `settings` | single row: `unit`, `reminder_days_mask`, `reminder_minutes`, `sound_on`, `vibration_on` |
 
+- All `DateTime` columns are stored as ISO-8601 text in UTC (so text order is time order); repositories return local time.
 - `workout_snapshot_json` stores the exported workout at session start, so history and
   resume still work if the workout is edited or deleted.
 - "Last time" = most recent `set_logs` rows with the same `exercise_name` (case-insensitive,

@@ -1,23 +1,18 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:workout_app/main.dart';
+import 'package:workout_app/data/repositories/workout_repository.dart';
+import 'package:workout_app/data/db/app_database.dart';
+import 'package:workout_app/core/clock.dart';
+import 'package:workout_app/features/import/domain/workout_parser.dart';
+import 'package:workout_app/models/exercise.dart';
 
-String fixture(String name) => File('test/fixtures/$name').readAsStringSync();
+import '../helpers/test_app.dart';
 
-Future<void> openImport(WidgetTester tester) async {
-  // Phone-sized screen (360 × 800 dp), so the issue list below the field is
-  // laid out.
-  tester.view.physicalSize = const Size(1080, 2400);
-  tester.view.devicePixelRatio = 3;
-  addTearDown(tester.view.reset);
-
-  await tester.pumpWidget(const ProviderScope(child: WorkoutApp()));
-  await tester.pumpAndSettle();
+Future<AppDatabase> openImport(WidgetTester tester) async {
+  final db = await pumpApp(tester);
   await tester.tap(find.byTooltip('Import'));
   await tester.pumpAndSettle();
+  return db;
 }
 
 Future<void> validate(WidgetTester tester, String json) async {
@@ -26,14 +21,18 @@ Future<void> validate(WidgetTester tester, String json) async {
   await tester.pumpAndSettle();
 }
 
-/// [CodeText] renders rich text, so match on the plain text of RichText.
-Finder richTextContaining(String text) => find.byWidgetPredicate(
-  (w) => w is RichText && w.text.toPlainText().contains(text),
-);
+Future<void> saveExisting(AppDatabase db) async {
+  final workout =
+      (parseWorkouts(fixture('valid_push_day.json'), defaultUnit: WeightUnit.kg)
+              as ImportSuccess)
+          .workouts
+          .single;
+  await WorkoutRepository(db, const SystemClock()).insert(workout);
+}
 
 void main() {
   testWidgets('valid JSON opens a preview of every exercise', (tester) async {
-    await openImport(tester);
+    final db = await openImport(tester);
     await validate(tester, fixture('valid_push_day.json'));
 
     expect(find.text('Preview'), findsOneWidget);
@@ -51,13 +50,14 @@ void main() {
     await tester.tap(find.text('Back'));
     await tester.pumpAndSettle();
     expect(find.text('Import'), findsOneWidget);
+    await disposeApp(tester, db);
   });
 
   testWidgets('invalid JSON lists every error and stays on import', (
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    await openImport(tester);
+    final db = await openImport(tester);
     await validate(tester, fixture('bad_ranges.json'));
 
     expect(find.text('Preview'), findsNothing);
@@ -69,6 +69,7 @@ void main() {
     );
     expect(richTextContaining('repsMax must be at least reps'), findsOneWidget);
     expect(richTextContaining('restSeconds must be between'), findsOneWidget);
+    await disposeApp(tester, db);
     semantics.dispose();
   });
 
@@ -76,7 +77,7 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    await openImport(tester);
+    final db = await openImport(tester);
     await validate(tester, fixture('unknown_field.json'));
 
     expect(find.text('Preview'), findsOneWidget);
@@ -85,6 +86,67 @@ void main() {
       richTextContaining('Unknown field tempo was ignored.'),
       findsOneWidget,
     );
+    await disposeApp(tester, db);
     semantics.dispose();
+  });
+
+  testWidgets('Save adds the workout to the library', (tester) async {
+    final db = await openImport(tester);
+    await validate(tester, fixture('valid_push_day.json'));
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Workout saved.'), findsOneWidget);
+    expect(find.text('Push Day A'), findsOneWidget);
+    expect(find.text('3 exercises · Not done yet'), findsOneWidget);
+    await disposeApp(tester, db);
+  });
+
+  group('duplicate name', () {
+    Future<AppDatabase> saveDuplicate(WidgetTester tester) async {
+      final db = await openImport(tester);
+      await tester.runAsync(() => saveExisting(db));
+      await validate(tester, fixture('unknown_field.json'));
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      expect(find.text('Name already exists'), findsOneWidget);
+      return db;
+    }
+
+    testWidgets('Keep both appends " (2)"', (tester) async {
+      final db = await saveDuplicate(tester);
+      await tester.tap(find.text('Keep both'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Push Day A'), findsOneWidget);
+      expect(find.text('Push Day A (2)'), findsOneWidget);
+      await disposeApp(tester, db);
+    });
+
+    testWidgets('Replace overwrites the saved workout', (tester) async {
+      final db = await saveDuplicate(tester);
+      await tester.tap(find.text('Replace'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Push Day A'), findsOneWidget);
+      // unknown_field.json has a single exercise.
+      expect(find.text('1 exercise · Not done yet'), findsOneWidget);
+      await disposeApp(tester, db);
+    });
+
+    testWidgets('Cancel saves nothing and stays on the preview', (
+      tester,
+    ) async {
+      final db = await saveDuplicate(tester);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Preview'), findsOneWidget);
+      final names = await tester.runAsync(
+        () => WorkoutRepository(db, const SystemClock()).names(),
+      );
+      expect(names!.values, ['Push Day A']);
+      await disposeApp(tester, db);
+    });
   });
 }

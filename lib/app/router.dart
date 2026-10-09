@@ -8,6 +8,7 @@ import '../features/import/import_providers.dart';
 import '../features/import/ui/import_preview_screen.dart';
 import '../features/import/ui/import_screen.dart';
 import '../features/library/ui/library_screen.dart';
+import '../features/library/ui/workout_detail_screen.dart';
 import '../features/settings/ui/settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -30,6 +31,12 @@ GoRouter buildRouter(Ref ref) {
                 path: '/',
                 builder: (context, state) => const LibraryScreen(),
                 routes: [
+                  GoRoute(
+                    path: 'workout/:id',
+                    builder: (context, state) => WorkoutDetailScreen(
+                      id: int.tryParse(state.pathParameters['id']!) ?? -1,
+                    ),
+                  ),
                   GoRoute(
                     path: 'import',
                     builder: (context, state) => const ImportScreen(),

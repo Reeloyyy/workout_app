@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # ISO-8601 text keeps milliseconds; repositories always write UTC so
+          # text comparison (MAX, ORDER BY) matches time order.
+          store_date_time_values_as_text: true
+          databases:
+            app_database: lib/data/db/app_database.dart
+          # `dart run drift_dev make-migrations` writes schema snapshots here
+          # and generates migration tests into test_dir.
+          schema_dir: drift_schemas/
+          test_dir: test/drift/

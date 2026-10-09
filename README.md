@@ -16,7 +16,7 @@ there is no backend and no account.
 
 ```bash
 flutter pub get
-dart run build_runner build --delete-conflicting-outputs   # drift code generation
+dart run build_runner build   # drift code generation
 dart format . && flutter analyze && flutter test
 flutter run
 ```

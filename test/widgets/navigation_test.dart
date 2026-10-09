@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:workout_app/main.dart';
+
+import '../helpers/test_app.dart';
 
 void main() {
   Finder appBarTitle(String text) =>
       find.descendant(of: find.byType(AppBar), matching: find.text(text));
 
   testWidgets('starts on Workouts and every tab navigates', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: WorkoutApp()));
-    await tester.pumpAndSettle();
+    final db = await pumpApp(tester);
 
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(appBarTitle('Workouts'), findsOneWidget);
@@ -22,8 +21,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(appBarTitle('Settings'), findsOneWidget);
 
-    await tester.tap(find.text('Workouts'));
+    await tester.tap(find.text('Workouts').last);
     await tester.pumpAndSettle();
     expect(appBarTitle('Workouts'), findsOneWidget);
+
+    await disposeApp(tester, db);
   });
 }
