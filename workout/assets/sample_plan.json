@@ -1,0 +1,238 @@
+{
+  "planName": "5-Day Home Gym Plan",
+  "weekNote": "Weeks 1–4: keep 2 reps in reserve. Form before load.",
+  "days": [
+    {
+      "key": "mon",
+      "label": "Mon",
+      "title": "Chest, Shoulders & Triceps",
+      "focus": "Barbell & dumbbell pressing focus",
+      "badge": "Push",
+      "badgeColor": "#378ADD",
+      "weekNote": "",
+      "tip": "Warm up with 2 light sets before working sets.",
+      "exercises": [
+        {
+          "name": "Barbell bench press",
+          "note": "Flat bench — main strength lift",
+          "sets": "4 × 5"
+        },
+        {
+          "name": "Dumbbell incline press",
+          "note": "45° incline, control the descent",
+          "sets": "3 × 10"
+        },
+        {
+          "name": "Seated dumbbell shoulder press",
+          "note": "Keep core braced, avoid arching the back",
+          "sets": "3 × 10"
+        },
+        {
+          "name": "Cable lateral raise",
+          "note": "Slow and controlled, no swinging",
+          "sets": "3 × 15"
+        },
+        {
+          "name": "Triceps rope pushdown",
+          "note": "Squeeze at the bottom",
+          "sets": "3 × 12"
+        },
+        {
+          "name": "Overhead dumbbell triceps extension",
+          "note": "Full stretch at the top",
+          "sets": "2 × 12"
+        }
+      ]
+    },
+    {
+      "key": "tue",
+      "label": "Tue",
+      "title": "Back & Biceps",
+      "focus": "Vertical and horizontal pulling",
+      "badge": "Pull",
+      "badgeColor": "#7F77DD",
+      "weekNote": "",
+      "tip": "Focus on pulling with your back, not your arms.",
+      "exercises": [
+        {
+          "name": "Pull-ups",
+          "note": "Add weight if you can do 10+ bodyweight",
+          "sets": "4 × 8"
+        },
+        {
+          "name": "Barbell bent-over row",
+          "note": "Flat back, pull to lower ribs",
+          "sets": "4 × 8"
+        },
+        {
+          "name": "Single-arm dumbbell row",
+          "note": "Full stretch at the bottom",
+          "sets": "3 × 10"
+        },
+        {
+          "name": "Lat pulldown",
+          "note": "Wide grip, drive elbows down",
+          "sets": "3 × 12"
+        },
+        {
+          "name": "Barbell curl",
+          "note": "No swinging, control the negative",
+          "sets": "3 × 10"
+        },
+        {
+          "name": "Hammer curl",
+          "note": "Targets brachialis and forearms",
+          "sets": "2 × 12"
+        }
+      ]
+    },
+    {
+      "key": "wed",
+      "label": "Wed",
+      "title": "Legs & Core",
+      "focus": "Squat pattern and posterior chain",
+      "badge": "Legs",
+      "badgeColor": "#639922",
+      "weekNote": "",
+      "tip": "Brace your core before every rep of the squat and deadlift.",
+      "exercises": [
+        {
+          "name": "Barbell back squat",
+          "note": "Depth to parallel or below",
+          "sets": "4 × 5"
+        },
+        {
+          "name": "Romanian deadlift",
+          "note": "Hinge at hips, slight knee bend",
+          "sets": "3 × 8"
+        },
+        {
+          "name": "Walking lunges",
+          "note": "Dumbbells at sides, long stride",
+          "sets": "3 × 12 per leg"
+        },
+        {
+          "name": "Leg press",
+          "note": "Feet shoulder-width, full range",
+          "sets": "3 × 12"
+        },
+        {
+          "name": "Standing calf raise",
+          "note": "Pause at the top for 1 second",
+          "sets": "4 × 15"
+        },
+        {
+          "name": "Hanging leg raise",
+          "note": "Control the descent, no swinging",
+          "sets": "3 × 12"
+        }
+      ]
+    },
+    {
+      "key": "thu",
+      "label": "Thu",
+      "title": "Rest Day",
+      "focus": "Recovery",
+      "badge": "Rest",
+      "badgeColor": "#6B7080",
+      "weekNote": "",
+      "tip": "Prioritize sleep, hydration, and light mobility work today.",
+      "exercises": []
+    },
+    {
+      "key": "fri",
+      "label": "Fri",
+      "title": "Chest, Shoulders & Triceps",
+      "focus": "Hypertrophy accessory volume",
+      "badge": "Push",
+      "badgeColor": "#378ADD",
+      "weekNote": "",
+      "tip": "Chase a good pump — slightly higher reps than Monday.",
+      "exercises": [
+        {
+          "name": "Dumbbell flat bench press",
+          "note": "Full stretch at the bottom",
+          "sets": "4 × 10"
+        },
+        {
+          "name": "Machine chest press",
+          "note": "Controlled tempo, no bouncing",
+          "sets": "3 × 12"
+        },
+        {
+          "name": "Arnold press",
+          "note": "Rotate palms through the press",
+          "sets": "3 × 10"
+        },
+        {
+          "name": "Cable chest fly",
+          "note": "Slight forward lean, squeeze at center",
+          "sets": "3 × 15"
+        },
+        {
+          "name": "Diamond push-ups",
+          "note": "To near failure",
+          "sets": "3 × max"
+        },
+        {
+          "name": "Triceps dips",
+          "note": "Lean forward slightly for more chest, upright for triceps",
+          "sets": "3 × 12"
+        }
+      ]
+    },
+    {
+      "key": "sat",
+      "label": "Sat",
+      "title": "Back, Biceps & Shoulders",
+      "focus": "Width and rear delts",
+      "badge": "Pull",
+      "badgeColor": "#7F77DD",
+      "weekNote": "",
+      "tip": "Squeeze your shoulder blades together on every row.",
+      "exercises": [
+        {
+          "name": "Deadlift",
+          "note": "Reset each rep, neutral spine",
+          "sets": "4 × 5"
+        },
+        {
+          "name": "Seated cable row",
+          "note": "Pull to the belly, chest up",
+          "sets": "3 × 10"
+        },
+        {
+          "name": "Face pulls",
+          "note": "Rear delts and upper back",
+          "sets": "3 × 15"
+        },
+        {
+          "name": "Reverse pec-deck fly",
+          "note": "Light weight, strict form",
+          "sets": "3 × 15"
+        },
+        {
+          "name": "EZ-bar curl",
+          "note": "Full range, no momentum",
+          "sets": "3 × 10"
+        },
+        {
+          "name": "Cable hammer curl",
+          "note": "Rope attachment, neutral grip",
+          "sets": "2 × 12"
+        }
+      ]
+    },
+    {
+      "key": "sun",
+      "label": "Sun",
+      "title": "Rest Day",
+      "focus": "Recovery",
+      "badge": "Rest",
+      "badgeColor": "#6B7080",
+      "weekNote": "",
+      "tip": "Take a walk, stretch, and prep your meals for the week ahead.",
+      "exercises": []
+    }
+  ]
+}
