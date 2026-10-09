@@ -3,16 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/history/ui/history_screen.dart';
+import '../features/import/domain/workout_parser.dart';
+import '../features/import/import_providers.dart';
+import '../features/import/ui/import_preview_screen.dart';
+import '../features/import/ui/import_screen.dart';
 import '../features/library/ui/library_screen.dart';
 import '../features/settings/ui/settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final router = buildRouter();
+  final router = buildRouter(ref);
   ref.onDispose(router.dispose);
   return router;
 });
 
-GoRouter buildRouter() {
+GoRouter buildRouter(Ref ref) {
   return GoRouter(
     initialLocation: '/',
     routes: [
@@ -25,6 +29,23 @@ GoRouter buildRouter() {
               GoRoute(
                 path: '/',
                 builder: (context, state) => const LibraryScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'import',
+                    builder: (context, state) => const ImportScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'preview',
+                        redirect: (context, state) =>
+                            ref.read(importResultProvider) is ImportSuccess
+                            ? null
+                            : '/import',
+                        builder: (context, state) =>
+                            const ImportPreviewScreen(),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

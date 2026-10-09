@@ -326,7 +326,14 @@ This format is the product. Do not change the meaning of a field without bumping
   *"Push Day A › exercise 3 (Plank): `durationSeconds` is required for timed exercises."*
   If the workout name is missing, use *"Workout 1"*.
 - Export produces JSON that re-imports to an identical `Workout` (round-trip test required).
-  Omit fields that hold their default value.
+  Omit fields that hold their default value — except `unit`, which is always written:
+  its default is the importing phone's setting, so omitting it could change the unit.
+  Every imported exercise stores a unit (the JSON value, else the app's default unit),
+  so a weight can be added later.
+- Strings are trimmed; an empty optional string and a `null` value count as absent.
+- `schemaVersion` greater than 1 reports only the "newer version" error.
+- In the app, field names written in backticks in messages are shown in monospace
+  without the backticks.
 
 ### 6.3 Required parser tests (fixtures in `test/fixtures/`)
 

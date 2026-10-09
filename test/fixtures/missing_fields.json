@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "workouts": [
+    {
+      "name": "Push Day A",
+      "exercises": [
+        { "name": "Bench Press", "type": "reps", "reps": 6 },
+        { "name": "Overhead Press", "type": "reps", "sets": 3, "reps": 10 },
+        { "name": "Plank", "type": "timed", "sets": 3 }
+      ]
+    }
+  ]
+}

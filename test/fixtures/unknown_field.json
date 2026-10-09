@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "workouts": [
+    {
+      "name": "Push Day A",
+      "exercises": [
+        { "name": "Bench Press", "sets": 4, "reps": 6, "tempo": "3-1-1" }
+      ]
+    }
+  ]
+}

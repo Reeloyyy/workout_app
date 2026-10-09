@@ -15,6 +15,22 @@ One line per decision. Decisions that change the spec are also written into `doc
 - 2026-10-08 — `main.dart` does not initialise timezone or notifications yet; added in M3/M5 when first used.
 - 2026-10-08 — Verification is Android-only (real phone for lock-screen/battery-saver/reboot, emulator for UI). iOS is configured, not run.
 
+## M1 — Import
+
+- 2026-10-08 — `Exercise.unit` is never null: JSON value, else the default unit. Export always writes `unit` (written into AGENTS.md §6.2).
+- 2026-10-08 — Strings are trimmed; empty optional strings and `null` values count as absent (AGENTS.md §6.2).
+- 2026-10-08 — `schemaVersion` > 1 reports only the "newer version" error; other fields are not checked (AGENTS.md §6.2).
+- 2026-10-08 — An invalid `type` skips the type-specific "required" checks to avoid follow-on errors; present values are still range-checked.
+- 2026-10-08 — Only the BOM is stripped before decoding (surrounding whitespace is valid JSON), so line/column match the text the user sees.
+- 2026-10-08 — Field names in backticks are shown in monospace without backticks (AGENTS.md §6.2). Each issue row is one screen-reader item ("Error, …" / "Warning, …").
+- 2026-10-08 — New copy needed by the import screen: "The clipboard has no text.", "This file is not UTF-8 text.", "The file could not be opened.", "Workout N is not a JSON object.", and "The file must be a JSON object with `schemaVersion` and `workouts`."
+- 2026-10-08 — Choose file loads the file into the text field; the user still taps Validate. Success opens the preview; warnings show on both screens.
+- 2026-10-08 — Import screens live under the Workouts tab, so the bottom navigation stays visible.
+- 2026-10-08 — Preview shows each exercise as "target · Rest N s" plus notes. The Save button arrives with the database in M2.
+- 2026-10-08 — Default unit is kg until settings exist (M5, `defaultUnitProvider`).
+- 2026-10-08 — `SetLog` and `Session` models are added in M3/M4 with the code that uses them.
+- 2026-10-08 — Widget tests for the import happy path and error list were written in M1 (planned for M6), since they check M1's exit criteria.
+
 ## Behaviour (approved; written into AGENTS.md)
 
 - 2026-10-08 — Rest-end alert is the scheduled notification in every app state, foreground included (no app-side sound/vibration). Android: high-importance channel, one channel per sound/vibration settings combination. iOS: foreground presentation options show it and play sound.
