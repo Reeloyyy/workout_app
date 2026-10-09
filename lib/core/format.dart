@@ -32,3 +32,16 @@ String formatTarget(Exercise exercise) {
 
 /// "Rest 90 s".
 String formatRest(int seconds) => 'Rest $seconds s';
+
+/// Clock-style duration: "1:05", "12:00", "1:02:03". Partial seconds round
+/// up, so a countdown shows "0:01" until it is really over.
+String formatClock(Duration duration) {
+  final totalSeconds = (duration.inMilliseconds / 1000).ceil();
+  final hours = totalSeconds ~/ 3600;
+  final minutes = (totalSeconds % 3600) ~/ 60;
+  final seconds = (totalSeconds % 60).toString().padLeft(2, '0');
+  if (hours > 0) {
+    return '$hours:${minutes.toString().padLeft(2, '0')}:$seconds';
+  }
+  return '$minutes:$seconds';
+}

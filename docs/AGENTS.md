@@ -230,7 +230,7 @@ String exportWorkouts(List<Workout> workouts); // pretty-printed, 2-space indent
 
 // features/player/domain/session_controller.dart
 class SessionController {
-  SessionController({required Workout workout, required Clock clock, SessionState? resumeFrom});
+  SessionController({required Workout workout, required Clock clock, DateTime? startedAt, SessionState? resumeFrom});
   SessionState get state;
   Stream<SessionState> get changes;
 
@@ -239,7 +239,8 @@ class SessionController {
   SetLog completeSet({int? reps, double? weight, int? durationSeconds});
   void skipRest();
   void addRestTime(Duration extra);           // +15 s button
-  void tick();                                // called ~4x/sec by the UI; ends rest when due
+  SetLog? tick();                             // called ~4x/sec by the UI and on resume; ends rest when due;
+                                              // returns the log of a timed set it auto-completed (persist it like completeSet)
   void finish();
 }
 ```
@@ -405,7 +406,8 @@ next step:
   exercise has no sets left   → idle, card marked done, next unfinished exercise highlighted
   whole workout has no sets   → finished (no rest; go to summary)
 selectExercise during rest    → allowed; rest continues, the new exercise becomes active
-any state ──finish──▶ finished
+any state ──finish──▶ finished   (Finish asks "Finish workout? N sets are not done." when sets remain)
+selectExercise on a finished exercise → ignored
 ```
 
 - Rest duration = `exercise.restSeconds ?? workout.defaultRestSeconds ?? 90`.
@@ -421,7 +423,8 @@ any state ──finish──▶ finished
   (`MediaQuery.disableAnimations`) by showing text only.
 - "Up next: Bench Press — set 3 of 4". Up next is the active exercise if it has sets left,
   otherwise the first unfinished exercise in list order.
-- Buttons: **+15 s**, **Skip**.
+- Buttons: **+15 s**, **Skip**. A **Change exercise** button under "Up next" opens a list of
+  unfinished exercises (this is how `selectExercise` during rest is reached).
 
 **Timer correctness — mandatory**
 - Store `restEndsAt` (a `DateTime`), never a decrementing counter.

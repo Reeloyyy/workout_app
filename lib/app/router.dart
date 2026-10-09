@@ -9,6 +9,7 @@ import '../features/import/ui/import_preview_screen.dart';
 import '../features/import/ui/import_screen.dart';
 import '../features/library/ui/library_screen.dart';
 import '../features/library/ui/workout_detail_screen.dart';
+import '../features/player/ui/player_screen.dart';
 import '../features/settings/ui/settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -21,6 +22,13 @@ GoRouter buildRouter(Ref ref) {
   return GoRouter(
     initialLocation: '/',
     routes: [
+      // Outside the tab shell, so the player has no bottom navigation.
+      GoRoute(
+        path: '/session/:id',
+        builder: (context, state) => PlayerScreen(
+          sessionId: int.tryParse(state.pathParameters['id']!) ?? -1,
+        ),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             _TabShell(navigationShell: navigationShell),

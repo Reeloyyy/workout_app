@@ -70,3 +70,20 @@ One line per decision. Decisions that change the spec are also written into `doc
 - 2026-10-08 — "Add sample workout" loads `assets/sample_workout.json`, a copy of `test/fixtures/valid_push_day.json` (a test checks they match).
 - 2026-10-08 — New copy: "No workouts yet", "Workouts are added as JSON. Tap Import, then paste the JSON or choose a .json file.", "N exercises · Last done <date>" / "Not done yet", "Workout saved." / "N workouts saved.", "Name already exists", "A workout named "X" is already saved.", "Delete workout?", ""X" will be removed. Its history is kept.", "Workout JSON copied to the clipboard.", and the "could not be saved / loaded / deleted / added" errors.
 - 2026-10-08 — `build_runner` 2.16 removed `--delete-conflicting-outputs`; the commands in AGENTS.md §3 and the README are updated.
+
+## M3 — Player and rest timer
+
+- 2026-10-08 — `tick()` returns `SetLog?`: the log of a timed set it auto-completed, so the provider can save it like `completeSet`'s (AGENTS.md §5.3).
+- 2026-10-08 — `SessionController` takes an optional `startedAt` (the session row's start time) (AGENTS.md §5.3).
+- 2026-10-08 — Intents that do not apply in the current phase throw `StateError`; the UI only offers the ones that apply. Selecting a finished exercise is ignored (AGENTS.md §7.2).
+- 2026-10-08 — The rest view has **Change exercise**, a list of unfinished exercises; it is the UI path to selecting during rest (AGENTS.md §7.2).
+- 2026-10-08 — Finish asks for confirmation only when sets remain (AGENTS.md §7.2).
+- 2026-10-08 — Rest alert rules live in `PlayerNotifier`: schedule when rest starts, reschedule on +15 s or when the next exercise changes, cancel on Skip and Finish, and do nothing when rest simply runs out.
+- 2026-10-08 — Rest alert channels use `AndroidNotificationCategory.alarm` with max importance. Sound and vibration are both on until settings exist (M5).
+- 2026-10-08 — Exact alarms: if not allowed, Start shows "Rest alerts may arrive late. Allow alarms for on-time alerts." with **Allow** (opens the system setting). Otherwise alerts are scheduled inexact.
+- 2026-10-08 — The session row is created when Start is tapped, in M3 rather than M4, because the player route needs its id. Until M4, logged sets live only in memory: leaving the player loses them, and Finish returns to `/` (no summary yet).
+- 2026-10-08 — Timed exercises: **Start** runs the countdown and **Done** stops it early. There are no weight controls; the exercise's JSON weight is logged. On auto-complete the phone vibrates (`HapticFeedback.vibrate`).
+- 2026-10-08 — Steppers: reps 0–200 in steps of 1; weight 0–2000 in steps of 2.5 kg / 5 lb; each stepper is labelled ("Reps", "Weight"). Stepper values carry over to the next set of the same exercise.
+- 2026-10-08 — The player rebuilds only when the clock moved, so the 250 ms ticker costs nothing when time is frozen in tests.
+- 2026-10-08 — New copy: "Rest", "Change exercise", "Finish workout?", "N sets are not done.", "Leave", "Workout finished.", "Set N", "N reps", "Add weight", "This workout could not be opened / started.", "Rest alerts" (channel), "Tells you when a rest is over." (channel description).
+- 2026-10-08 — An architecture test enforces §5.2: no package imports in models and domain folders, and no `DateTime.now()` outside `SystemClock`.

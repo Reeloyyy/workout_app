@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/providers.dart';
 import '../../../models/workout.dart';
+import '../../../services/service_providers.dart';
 import '../../import/domain/workout_parser.dart';
 import 'workout_overview.dart';
 
@@ -21,6 +24,45 @@ class WorkoutDetailScreen extends ConsumerWidget {
       ..showSnackBar(
         const SnackBar(content: Text('Workout JSON copied to the clipboard.')),
       );
+  }
+
+  /// Asks for notification permission (first start only shows a prompt),
+  /// creates the session and opens the player. Offers exact alarms when
+  /// they are not allowed, because rest alerts could otherwise be late.
+  Future<void> _start(
+    BuildContext context,
+    WidgetRef ref,
+    SavedWorkout saved,
+  ) async {
+    final notifications = ref.read(notificationServiceProvider);
+    await notifications.requestPermission();
+    final int sessionId;
+    try {
+      sessionId = await ref.read(sessionRepositoryProvider).start(saved);
+    } on Exception {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('The workout could not be started.')),
+      );
+      return;
+    }
+    if (!context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    unawaited(context.push('/session/$sessionId'));
+    if (!await notifications.canScheduleExactAlarms()) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Rest alerts may arrive late. Allow alarms for on-time alerts.',
+          ),
+          duration: const Duration(seconds: 8),
+          action: SnackBarAction(
+            label: 'Allow',
+            onPressed: notifications.requestExactAlarms,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _delete(
@@ -82,6 +124,19 @@ class WorkoutDetailScreen extends ConsumerWidget {
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 8),
           children: [WorkoutOverview(workout: saved.workout, showName: false)],
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: FilledButton.icon(
+              onPressed: () => _start(context, ref, saved),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(56),
+              ),
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('Start'),
+            ),
+          ),
         ),
       ),
       AsyncData() => const _Message('This workout no longer exists.'),

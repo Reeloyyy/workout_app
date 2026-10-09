@@ -3,21 +3,13 @@ import 'dart:io';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:workout_app/core/clock.dart';
 import 'package:workout_app/data/db/app_database.dart';
 import 'package:workout_app/data/repositories/workout_repository.dart';
 import 'package:workout_app/features/import/domain/workout_parser.dart';
 import 'package:workout_app/models/exercise.dart';
 import 'package:workout_app/models/workout.dart';
 
-class FakeClock implements Clock {
-  FakeClock(this.current);
-
-  DateTime current;
-
-  @override
-  DateTime now() => current;
-}
+import '../helpers/fake_clock.dart';
 
 Workout pushDay() {
   final result = parseWorkouts(

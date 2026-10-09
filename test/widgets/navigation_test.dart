@@ -8,7 +8,7 @@ void main() {
       find.descendant(of: find.byType(AppBar), matching: find.text(text));
 
   testWidgets('starts on Workouts and every tab navigates', (tester) async {
-    final db = await pumpApp(tester);
+    final app = await pumpApp(tester);
 
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(appBarTitle('Workouts'), findsOneWidget);
@@ -25,6 +25,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(appBarTitle('Workouts'), findsOneWidget);
 
-    await disposeApp(tester, db);
+    await disposeApp(tester, app);
   });
 }

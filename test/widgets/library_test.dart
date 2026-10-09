@@ -18,7 +18,7 @@ void main() {
   testWidgets('empty library explains import and offers the sample', (
     tester,
   ) async {
-    final db = await pumpApp(tester);
+    final app = await pumpApp(tester);
 
     expect(find.text('No workouts yet'), findsOneWidget);
     expect(find.text('Import'), findsOneWidget);
@@ -28,7 +28,7 @@ void main() {
     expect(find.text('No workouts yet'), findsNothing);
     expect(find.text('Push Day A'), findsOneWidget);
     expect(find.text('3 exercises · Not done yet'), findsOneWidget);
-    await disposeApp(tester, db);
+    await disposeApp(tester, app);
   });
 
   testWidgets('detail shows exercises, exports and deletes', (tester) async {
@@ -50,7 +50,7 @@ void main() {
       ),
     );
 
-    final db = await pumpApp(tester);
+    final app = await pumpApp(tester);
     await tester.tap(find.text('Add sample workout'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Push Day A'));
@@ -79,6 +79,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('No workouts yet'), findsOneWidget);
-    await disposeApp(tester, db);
+    await disposeApp(tester, app);
   });
 }
